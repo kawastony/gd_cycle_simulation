@@ -1,3 +1,39 @@
+Introducing MTKI: Open-Source Intelligence for a Just and Coherent World
+
+MTKI is more than a tool—it’s a movement. Built on principles of open-source purity and no-pity ethics, MTKI is a constitutional kernel that harmonizes reasoning with reality across science, governance, and ethics.
+
+Why MTKI?
+
+Today’s AI systems often optimize for engagement or profit, not truth or coherence. MTKI changes that. It:
+
+Bridges philosophy and physics, offering candidate structures for GR↔QM integration.
+
+Supports constitutional amendments and institutional relevance assessments.
+
+Embeds ethical reasoning into AI workflows.
+
+How to Get Started
+
+Run instantly on Colab: Launch MTKI Demo
+
+Explore the code: GitHub Repository
+
+Join the Movement
+
+We believe in global collaboration. MTKI is open-source, transparent, and community-driven. Here’s how you can help:
+
+Contribute code or ideas.
+
+Share MTKI with researchers, policymakers, and developers.
+
+Join our upcoming Discord community and hackathons.
+
+Our Vision
+
+A world where AI doesn’t just think—it aligns with reality and ethics. MTKI is the first step toward that future.
+
+Let’s change the world. Together.
+
 # MTKI Kernel – gd_cycle_simulation
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kawastony/gd_cycle_simulation/blob/main/mtki_demo.ipynb)
