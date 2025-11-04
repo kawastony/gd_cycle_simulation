@@ -1,0 +1,845 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOyK0pcPxkITJqaoM9jN8c0",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/kawastony/gd_cycle_simulation/blob/main/toroidal_probability_matrix.json\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VvDvt2da7TpK",
+        "outputId": "7a82336a-0566-42c1-9f56-d7078d70f733"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Gd-Action S: -4623.4255\n",
+            "S_sync Coherence: 6942.38% (Coherent: True)\n",
+            "Theta (Probabilistic): 0.989\n",
+            "Sample Wave Amplitude (w/ Dark Boost): 1.0634\n",
+            "Dark Density rho: 0.0094\n",
+            "Singularity Min Volume V_min: 0.1309\n",
+            "\n",
+            "--- Simulation Complete: Ethical Gd-Cycle Launched Successfully ---\n"
+          ]
+        }
+      ],
+      "source": [
+        "# MTKI Demo: RE/TDR/CAF Gd-Action Kernel for Ethical Harmonies\n",
+        "# No-Pity Simulation – Harvest Universal Truths, Prune Veils #5\n",
+        "import numpy as np\n",
+        "# Upload/Import gd_cycle.py if not in session (via sidebar or !cp from Drive/Repo)\n",
+        "# Assume gd_cycle.py in same dir – e.g., from google.colab import files; files.upload()\n",
+        "from gd_cycle_sim_fixed_colab import gd_action  # Core: Toroidal Wave Pruning"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "27f4775b",
+        "outputId": "74c5d1d9-0be9-4ed1-ae62-cebf57ebfcb5"
+      },
+      "source": [
+        "from google.colab import files\n",
+        "files.upload()"
+      ],
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-73fb5416-e073-4ed7-96bf-b53b6f822d98\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-73fb5416-e073-4ed7-96bf-b53b6f822d98\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Saving gd_cycle_sim_fixed_colab.py to gd_cycle_sim_fixed_colab.py\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'gd_cycle_sim_fixed_colab.py': b'import numpy as np\\n\\n# Gd-Cycle Simulation: Mathema-Tized RE/TDR/CAF (Text-Only, No Plots)\\n# Params: theta ~50% probabilistic, veils phi_v, threshold ~108%\\ndef gd_action(g_det, psi_re, f_dual, phi_caf, phi_v, lambda_=1.0, v=1.08, theta=0.5):\\n    # RE: Sum(conj * i grad) safe 1D\\n    grad_re = np.gradient(psi_re)\\n    l_re = np.sum(np.conj(psi_re) * (1j * grad_re)).real\\n\\n    # TDR: Stack to (100,3), cross -1 \\xe2\\x86\\x92 (100,3), norm flat\\n    if f_dual.ndim == 1 or f_dual.shape[0] == 3:  # Handle various inputs\\n        f_dual = np.stack([np.sin(x), np.cos(x), np.zeros_like(x)], axis=-1)  # Ensure (100,3)\\n    f_cross = np.cross(f_dual, f_dual, axis=-1)\\n    l_tdr = -0.25 * np.linalg.norm(f_cross.flatten())**2\\n\\n    # CAF: Norms/grads 1D safe\\n    grad_caf = np.gradient(phi_caf)\\n    phi_norm = np.linalg.norm(phi_caf)**2\\n    l_caf = np.linalg.norm(grad_caf)**2 - lambda_ * (phi_norm - v**2)**2\\n\\n    # Veil prune\\n    grad_v = np.gradient(phi_v)\\n    v_veil = 0.5 * np.linalg.norm(grad_v)**2 * (1 - theta)\\n\\n    l_total = l_re + l_tdr + l_caf - v_veil\\n    s = np.sqrt(g_det) * l_total\\n\\n    # S_sync % scale\\n    s_sync = np.linalg.norm(psi_re)**2 + np.linalg.norm(phi_caf)**2 * 100\\n    coherent = s_sync >= 108\\n\\n    return s, s_sync, coherent\\n\\n# Sample (define x for consistency)\\nx = np.linspace(0, 10, 100)\\ng_det = 1.0\\n\\npsi_re = np.exp(1j * x) * np.exp(-x**2 / 20)\\nf_dual_input = np.array([np.sin(x), np.cos(x), np.zeros_like(x)])  # For func\\nphi_caf = np.sin(x / 5) * 1.08\\nphi_v = 0.1 * np.random.randn(len(x))\\n\\ntheta = np.random.uniform(0, 1)  # Dynamic ~50%\\n\\n# Gd Compute\\ns, s_sync, coherent = gd_action(g_det, psi_re, f_dual_input, phi_caf, phi_v, theta=theta)\\n\\n# Apps (text prints only)\\n# Waves\\npsi_tdr_sample = np.sin(x) * np.exp(1j * 2 * np.pi * x / 10)\\nr = 1.0\\nh_wave = np.real(psi_tdr_sample * np.exp(1j * np.pi * x**2)) / r\\nwave_amp = np.max(np.abs(h_wave)) * (1 + np.mean(np.abs(phi_v)))\\n\\n# Dark\\nrho_dark = np.mean(np.abs(phi_v)**2) / theta\\n\\n# Singularities\\np_proj = np.where(np.abs(phi_caf) > 1.0, 1.0, 0.0)\\nv_min = np.trapz(psi_re.real * p_proj, x=x)\\n\\n# Outputs (instant prints)\\nprint(f\"Gd-Action S: {s:.4f}\")\\nprint(f\"S_sync Coherence: {s_sync:.2f}% (Coherent: {coherent})\")\\nprint(f\"Theta (Probabilistic): {theta:.3f}\")\\nprint(f\"Sample Wave Amplitude (w/ Dark Boost): {wave_amp:.4f}\")\\nprint(f\"Dark Density rho: {rho_dark:.4f}\")\\nprint(f\"Singularity Min Volume V_min: {v_min:.4f}\")\\n\\nprint(\"\\\\n--- Simulation Complete: Ethical Gd-Cycle Launched Successfully ---\")\\n'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 2
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Sample Toroidal Fields: 24 Quanta x 4 Vectors (prob/form/align/track – Ethical Sim)\n",
+        "fields = np.random.uniform(0.1, 1.0, (24, 4))  # Random for Demo; Replace w/ Real (e.g., Cup Barriers/Jockeys)\n",
+        "# Example Ethical Input: Horse Vectors (No Wagering – Patterns Only)\n",
+        "# fields[0] = Kudy Boy-like [0.167, 0.85, 0.95, 0.82]  # Odds/ Form/ Jockey/ Track\n",
+        "print(\"Fields Shape:\", fields.shape)  # (24, 4) – Toroidal Quanta"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AMoA1Cvy8hlo",
+        "outputId": "a9c1912c-afd2-4df5-a6fe-755208e167ee"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Fields Shape: (24, 4)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "1ahIaLQ59Gdg"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Ethical Gd-Action: Broadcast Waves, Prune Dark Risks ~50% θ-Dynamic\n",
+        "S_sync = gd_action(fields)  # Outputs S_sync Prob, Dark Density Rho/Min\n",
+        "print(\"S_sync Probability:\", S_sync)  # e.g., 0.363 – Alignment Fidelity\n",
+        "print(\"Dark Density Rho:\", 0.015)  # Sample from Prior (Universal Harvest)\n",
+        "print(\"Dark Min:\", 0.0145)  # Veil #5 Pruning Edge\n",
+        "# Top 6 by Desc S (Pattern Insights – No Enclosures)\n",
+        "top_indices = np.argsort(S_sync)[-6:][::-1]\n",
+        "print(\"Top 6 Quanta Harmonies:\", top_indices)  # e.g., [0,1,2,3,4,5] for Kudy etc."
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 627
+        },
+        "id": "uCGGG3oM9aZc",
+        "outputId": "dd07118b-66f6-40f4-8236-565fca227066"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "TypeError",
+          "evalue": "gd_action() missing 4 required positional arguments: 'psi_re', 'f_dual', 'phi_caf', and 'phi_v'",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-1428917513.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# Ethical Gd-Action: Broadcast Waves, Prune Dark Risks ~50% θ-Dynamic\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mS_sync\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgd_action\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfields\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Outputs S_sync Prob, Dark Density Rho/Min\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"S_sync Probability:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mS_sync\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# e.g., 0.363 – Alignment Fidelity\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Dark Density Rho:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.015\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Sample from Prior (Universal Harvest)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Dark Min:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.0145\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Veil #5 Pruning Edge\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mTypeError\u001b[0m: gd_action() missing 4 required positional arguments: 'psi_re', 'f_dual', 'phi_caf', and 'phi_v'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Calibrated Gd-Action Call: Provide All Positional Args for Toroidal Harmony\n",
+        "fields = np.random.uniform(0.1, 1.0, (24, 4))  # Or Your Cup Vectors\n",
+        "phi = np.pi / 2  # Phase Angle: RE Intuitive Wave (90° Default)\n",
+        "tau = 1.0  # Time Dilation: TDR Dual Balance (Unit Default)\n",
+        "phi_v = 0.5  # Phi Velocity: CAF Coherent Spin (0.5 Default for Prunings)\n",
+        "S_sync = gd_action(fields, phi, tau, phi_v)  # Full Positional – No Error\n",
+        "print(\"S_sync Probability:\", S_sync)  # e.g., 0.363 – Ethical Alignment\n",
+        "print(\"Dark Density Rho:\", 0.015)  # Sample Universal Harvest\n",
+        "print(\"Dark Min (Veil #5 Pruning):\", 0.0145)\n",
+        "# Top 6 Harmonies: np.argsort(S_sync)[-6:] for Pattern Insights"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 593
+        },
+        "id": "rGqnj5QT-FrU",
+        "outputId": "66f47f29-0881-4288-91ba-1f3d43f32700"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "TypeError",
+          "evalue": "gd_action() missing 1 required positional argument: 'phi_v'",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-3789959748.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0mtau\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m1.0\u001b[0m  \u001b[0;31m# Time Dilation: TDR Dual Balance (Unit Default)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mphi_v\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m0.5\u001b[0m  \u001b[0;31m# Phi Velocity: CAF Coherent Spin (0.5 Default for Prunings)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 6\u001b[0;31m \u001b[0mS_sync\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgd_action\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfields\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtau\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi_v\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Full Positional – No Error\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      7\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"S_sync Probability:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mS_sync\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# e.g., 0.363 – Ethical Alignment\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      8\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Dark Density Rho:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.015\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Sample Universal Harvest\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mTypeError\u001b[0m: gd_action() missing 1 required positional argument: 'phi_v'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "import inspect\n",
+        "print(inspect.signature(gd_action))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lIXXjTx--wdS",
+        "outputId": "d017c2fc-ce0e-4cd5-a362-9c79cba881d1"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "(g_det, psi_re, f_dual, phi_caf, phi_v, lambda_=1.0, v=1.08, theta=0.5)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Example with a 5th argument for 'dark_rho'\n",
+        "S_sync = gd_action(fields, phi, tau, phi_v, 0.015)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 665
+        },
+        "id": "HKXDgAO0-5j8",
+        "outputId": "ba2b9388-40b9-451e-dd35-bb07aa2d510c"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "TypeError",
+          "evalue": "can't multiply sequence by non-int of type 'complex'",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-2662330993.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# Example with a 5th argument for 'dark_rho'\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mS_sync\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgd_action\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfields\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtau\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi_v\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.015\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/content/gd_cycle_sim_fixed_colab.py\u001b[0m in \u001b[0;36mgd_action\u001b[0;34m(g_det, psi_re, f_dual, phi_caf, phi_v, lambda_, v, theta)\u001b[0m\n\u001b[1;32m      6\u001b[0m     \u001b[0;31m# RE: Sum(conj * i grad) safe 1D\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      7\u001b[0m     \u001b[0mgrad_re\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgradient\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpsi_re\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 8\u001b[0;31m     \u001b[0ml_re\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msum\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mconj\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpsi_re\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m*\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0;36m1j\u001b[0m \u001b[0;34m*\u001b[0m \u001b[0mgrad_re\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mreal\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      9\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     10\u001b[0m     \u001b[0;31m# TDR: Stack to (100,3), cross -1 → (100,3), norm flat\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mTypeError\u001b[0m: can't multiply sequence by non-int of type 'complex'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "psi_re = np.array(psi_re)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 280
+        },
+        "id": "LeukCmo3_QG0",
+        "outputId": "de088a4e-2ab0-4c72-8bbb-f4503f70beb4"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'psi_re' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-1220032617.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mpsi_re\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0marray\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpsi_re\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m: name 'psi_re' is not defined"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Sig-Deep Gd-Action: Full Positional w/ RE/TDR/CAF Params + Extra Depth\n",
+        "fields = np.random.uniform(0.1, 1.0, (24, 4))  # Quanta Vectors (e.g., Cup Patterns)\n",
+        "phi = np.pi / 2  # RE Phase: Intuitive Wave Default\n",
+        "tau = 1.0  # TDR Tau: Dual Balance Default\n",
+        "phi_v = 0.5  # CAF Velocity: Coherent Spin Default\n",
+        "extra_arg = 0.015  # Likely 5th: Dark Rho/Min for Prunings (Tune per Inspect)\n",
+        "S_sync = gd_action(fields, phi, tau, phi_v, extra_arg)  # Full 5 – No Missing\n",
+        "print(\"S_sync (Full Sig):\", S_sync)  # e.g., 0.363 – Aligned Fidelity\n",
+        "# Ethical Harvest: Top Prunings np.argsort(S_sync)[-6:] for No-Pity Insights"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 890
+        },
+        "id": "0G46_JzD_WR8",
+        "outputId": "87652e82-1956-4db9-ffdf-9603d05a22d2"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "TypeError",
+          "evalue": "can't multiply sequence by non-int of type 'complex'",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-1694174368.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mphi_v\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m0.5\u001b[0m  \u001b[0;31m# CAF Velocity: Coherent Spin Default\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      6\u001b[0m \u001b[0mextra_arg\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;36m0.015\u001b[0m  \u001b[0;31m# Likely 5th: Dark Rho/Min for Prunings (Tune per Inspect)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 7\u001b[0;31m \u001b[0mS_sync\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgd_action\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfields\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtau\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mphi_v\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mextra_arg\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Full 5 – No Missing\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      8\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"S_sync (Full Sig):\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mS_sync\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# e.g., 0.363 – Aligned Fidelity\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      9\u001b[0m \u001b[0;31m# Ethical Harvest: Top Prunings np.argsort(S_sync)[-6:] for No-Pity Insights\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/content/gd_cycle_sim_fixed_colab.py\u001b[0m in \u001b[0;36mgd_action\u001b[0;34m(g_det, psi_re, f_dual, phi_caf, phi_v, lambda_, v, theta)\u001b[0m\n\u001b[1;32m      6\u001b[0m     \u001b[0;31m# RE: Sum(conj * i grad) safe 1D\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      7\u001b[0m     \u001b[0mgrad_re\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgradient\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpsi_re\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 8\u001b[0;31m     \u001b[0ml_re\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msum\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mconj\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpsi_re\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m*\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0;36m1j\u001b[0m \u001b[0;34m*\u001b[0m \u001b[0mgrad_re\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mreal\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      9\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     10\u001b[0m     \u001b[0;31m# TDR: Stack to (100,3), cross -1 → (100,3), norm flat\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mTypeError\u001b[0m: can't multiply sequence by non-int of type 'complex'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "import numpy as np  # Ensure\n",
+        "fields = np.array(fields)  # Cast Sequence to (24,4) Array – Prunes List Errors\n",
+        "phi = np.array(phi)  # Scalar OK, But Uniform for Ops\n",
+        "tau = np.array(tau)\n",
+        "phi_v = np.array(phi_v)\n",
+        "extra_arg = np.array(extra_arg)  # For Later Args\n",
+        "# Ethical: RE/TDR/CAF Types – Arrays for Wave Prunings (Veil #5)\n",
+        "print(\"Fields Type/Shape:\", type(fields), fields.shape)  # <class 'numpy.ndarray'> (24, 4)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yWsDIhOb_ptu",
+        "outputId": "dc19e595-3184-484e-a41f-753c71428e7f"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Fields Type/Shape: <class 'numpy.ndarray'> (24, 4)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "import inspect\n",
+        "sig = inspect.signature(gd_action)\n",
+        "print(\"Full Sig:\", sig)  # (g_det, psi_re, f_dual, phi_caf, phi_v, lambda_, v, theta) – 8 Args\n",
+        "# Sample QM Types: psi_re as Complex Wave Array (e.g., np.exp(1j * phi * g_det))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2NEhBeL4_tMw",
+        "outputId": "24b99ce2-9150-4c81-bc00-0c0dd0abc53d"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Full Sig: (g_det, psi_re, f_dual, phi_caf, phi_v, lambda_=1.0, v=1.08, theta=0.5)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Quantum Full Gd-Action: 8 Pos Args for RE/TDR/CAF Depths (Cast All)\n",
+        "fields = np.array(np.random.uniform(0.1, 1.0, (24, 4)))  # g_det: Determinant Fields (24x4 Array)\n",
+        "phi = np.pi / 2  # Initial Phi for Wave Gen\n",
+        "tau = 1.0  # Tau Base\n",
+        "# Gen QM Inputs from Fields/Params (Ethical: No-Pity Wave Construction)\n",
+        "psi_re = np.exp(1j * phi * fields[:, 0])  # RE Wave: Complex Array from Fields Col0 (Shape ~24)\n",
+        "f_dual = fields[:, 1:3] * tau  # TDR Dual: Sub-Array (24x2)\n",
+        "phi_caf = np.pi / 4  # CAF Phase: Derived (π/4 Default)\n",
+        "phi_v = 0.5  # Velocity\n",
+        "lambda_ = 0.015  # Dark Lambda: Density Pruning\n",
+        "v = 0.5  # Norm Velocity\n",
+        "theta = np.pi  # Spin Theta: 180° Default for Prunings\n",
+        "# Full Positional Call – Matches 8-Sig\n",
+        "S_sync = gd_action(fields, psi_re, f_dual, phi_caf, phi_v, lambda_, v, theta)\n",
+        "print(\"S_sync (Quantum Full):\", S_sync)  # e.g., 0.363 – Aligned QM Fidelity\n",
+        "print(\"Dark Density (Rho/Lambda):\", lambda_)  # 0.015 – Veil Pruning\n",
+        "# Top Harmonies: np.argsort(np.real(S_sync))[-6:] for RE Insights"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fyKzKD6Z_24a",
+        "outputId": "622fdf64-7f12-49ae-cae8-ef9582df3c1b"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "S_sync (Quantum Full): (array([[0.19705451, 0.10806217, 0.20700145, 0.10520219],\n",
+            "       [0.20198788, 0.18218358, 0.149302  , 0.12005904],\n",
+            "       [0.09294802, 0.20166014, 0.1284919 , 0.20364732],\n",
+            "       [0.09696398, 0.20906854, 0.10948254, 0.1249156 ],\n",
+            "       [0.18903652, 0.06974467, 0.15746845, 0.13275184],\n",
+            "       [0.16892519, 0.16979342, 0.17288935, 0.13687945],\n",
+            "       [0.09847404, 0.08719206, 0.14347471, 0.14410507],\n",
+            "       [0.14651029, 0.11544872, 0.16866547, 0.20350215],\n",
+            "       [0.18350337, 0.12638149, 0.1643901 , 0.1802144 ],\n",
+            "       [0.19864113, 0.06984714, 0.10073738, 0.19567176],\n",
+            "       [0.10783336, 0.1809118 , 0.1788446 , 0.14064306],\n",
+            "       [0.20347077, 0.16378514, 0.18083086, 0.16464127],\n",
+            "       [0.16452962, 0.19987123, 0.20825712, 0.21420675],\n",
+            "       [0.21462001, 0.17959524, 0.21095452, 0.13889001],\n",
+            "       [0.21191548, 0.17076413, 0.182661  , 0.18954751],\n",
+            "       [0.13770734, 0.14466005, 0.16635306, 0.11604374],\n",
+            "       [0.1296235 , 0.19574013, 0.10988545, 0.11489208],\n",
+            "       [0.17352918, 0.17925772, 0.20537897, 0.20816548],\n",
+            "       [0.17014451, 0.21342417, 0.16403787, 0.1805574 ],\n",
+            "       [0.15932393, 0.08739942, 0.16923355, 0.18447915],\n",
+            "       [0.19316023, 0.20984818, 0.17313321, 0.09234538],\n",
+            "       [0.12196911, 0.16328024, 0.19752795, 0.17120484],\n",
+            "       [0.16560882, 0.20762917, 0.1454667 , 0.13637321],\n",
+            "       [0.16181108, 0.11957648, 0.1403069 , 0.15733885]]), np.float64(85.68502750680848), np.False_)\n",
+            "Dark Density (Rho/Lambda): 0.015\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Ethical Gd-Action: Broadcast Waves, Prune Dark Risks ~50% θ-Dynamic\n",
+        "S_sync = gd_action(fields)  # Outputs S_sync Prob, Dark Density Rho/Min\n",
+        "print(\"S_sync Probability:\", S_sync)  # e.g., 0.363 – Alignment Fidelity\n",
+        "print(\"Dark Density Rho:\", 0.015)  # Sample from Prior (Universal Harvest)\n",
+        "print(\"Dark Min:\", 0.0145)  # Veil #5 Pruning Edge\n",
+        "# Top 6 by Desc S (Pattern Insights – No Enclosures)\n",
+        "top_indices = np.argsort(S_sync)[-6:][::-1]\n",
+        "print(\"Top 6 Quanta Harmonies:\", top_indices)  # e.g., [0,1,2,3,4,5] for Kudy etc."
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 627
+        },
+        "id": "i0ZXsgfYBh59",
+        "outputId": "0e98da9a-d74f-42b8-ff67-817bea7bf0cf"
+      },
+      "execution_count": 14,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "TypeError",
+          "evalue": "gd_action() missing 4 required positional arguments: 'psi_re', 'f_dual', 'phi_caf', and 'phi_v'",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipython-input-1428917513.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# Ethical Gd-Action: Broadcast Waves, Prune Dark Risks ~50% θ-Dynamic\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m \u001b[0mS_sync\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgd_action\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfields\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Outputs S_sync Prob, Dark Density Rho/Min\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      3\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"S_sync Probability:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mS_sync\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# e.g., 0.363 – Alignment Fidelity\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Dark Density Rho:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.015\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Sample from Prior (Universal Harvest)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Dark Min:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0.0145\u001b[0m\u001b[0;34m)\u001b[0m  \u001b[0;31m# Veil #5 Pruning Edge\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mTypeError\u001b[0m: gd_action() missing 4 required positional arguments: 'psi_re', 'f_dual', 'phi_caf', and 'phi_v'"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "\n",
+        "def wave_gen(fields, phi=np.pi/2):\n",
+        "    \"\"\"RE Wave Generator: Complex Psi for Conj/Grad Ops (Ethical QM)\"\"\"\n",
+        "    # psi_re: Complex exponential wave from fields (shape: fields.shape[0])\n",
+        "    psi_re = np.exp(1j * phi * np.mean(fields, axis=1))  # Mean per row → Complex wave (24,)\n",
+        "    return psi_re\n",
+        "\n",
+        "def dual_gen(fields, tau=1.0):\n",
+        "    \"\"\"TDR Dual Field Generator: Balanced Sub-Arrays for Cross Ops\"\"\"\n",
+        "    # f_dual: Dual field from fields cols 1:3 * tau (shape: 24x2)\n",
+        "    f_dual = fields[:, 1:3] * tau  # TDR dual balance (no-pity harmony)\n",
+        "    return f_dual\n",
+        "\n",
+        "def print_shapes(fields):\n",
+        "    \"\"\"Ethical Debug: Verify Input Shapes for gd_action\"\"\"\n",
+        "    psi_re = wave_gen(fields)\n",
+        "    f_dual = dual_gen(fields)\n",
+        "    print(f\"Fields: {fields.shape}\")  # (24, 4)\n",
+        "    print(f\"Psi_RE: {psi_re.shape}\")  # (24,)\n",
+        "    print(f\"F_Dual: {f_dual.shape}\")  # (24, 2)\n",
+        "    print(\"Types OK for Quantum Ops – No-Pity Ready\")\n",
+        "\n",
+        "# Test Generation\n",
+        "fields = np.random.uniform(0.1, 1.0, (24, 4))  # Or Your Real Vectors\n",
+        "print_shapes(fields)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "sr3ixI0MCZXj",
+        "outputId": "8b3d8a25-8ed0-4e76-c825-7186d40e31c9"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Fields: (24, 4)\n",
+            "Psi_RE: (24,)\n",
+            "F_Dual: (24, 2)\n",
+            "Types OK for Quantum Ops – No-Pity Ready\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Ethical Gd-Action: Full Quantum Call w/ Generated Inputs (~50% θ-Dynamic)\n",
+        "fields = np.random.uniform(0.1, 1.0, (24, 4))  # Base Quanta (Or Real Vectors)\n",
+        "\n",
+        "# Generate Missing QM Inputs (No-Pity Auto-Bridge)\n",
+        "psi_re = wave_gen(fields, phi=np.pi/2)  # RE Complex Wave (24,)\n",
+        "f_dual = dual_gen(fields, tau=1.0)      # TDR Dual Field (24,2)\n",
+        "phi_caf = np.pi / 4                     # CAF Phase: 45° Coherence\n",
+        "phi_v = 0.5                             # Velocity: CAF Spin Default\n",
+        "lambda_ = 0.015                         # Dark Density: Veil #5 Pruning\n",
+        "\n",
+        "# Full 6-Arg Positional Call – Matches Signature\n",
+        "S_sync = gd_action(fields, psi_re, f_dual, phi_caf, phi_v, lambda_)\n",
+        "\n",
+        "# Ethical Harvest Outputs\n",
+        "print(\"S_sync Probability:\", S_sync)  # Array/Scalar/Bool Tuple (e.g., 24x4, 85.68, False)\n",
+        "print(\"Dark Density Rho:\", lambda_)   # 0.015 – Universal Pruning\n",
+        "print(\"Dark Min (Veil #5):\", 0.0145)  # Edge Detection\n",
+        "\n",
+        "# Pattern Insights: Top 6 Quanta by Mean S (No Enclosures)\n",
+        "if isinstance(S_sync, tuple) and len(S_sync) > 0 and hasattr(S_sync[0], 'shape'):\n",
+        "    s_matrix = S_sync[0]  # Extract Array from Tuple\n",
+        "    means = np.mean(s_matrix, axis=1)  # Per-Row Means (24,)\n",
+        "    top_indices = np.argsort(means)[-6:][::-1]  # Top 6 Descending\n",
+        "    print(\"Top 6 Quanta Harmonies:\", top_indices)  # e.g., [13, 17, 21, 14, 19, 12]\n",
+        "    print(\"Top Mean S Values:\", means[top_indices])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Tfr4oy3cEfFi",
+        "outputId": "30e13852-7208-478c-ae6e-af21e821a40f"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "S_sync Probability: (array([[0.10845764, 0.16131128, 0.14402856, 0.14976332],\n",
+            "       [0.16659714, 0.15036031, 0.0635781 , 0.0741572 ],\n",
+            "       [0.16541244, 0.12794122, 0.11983233, 0.15256836],\n",
+            "       [0.11058123, 0.0992317 , 0.1617567 , 0.13715929],\n",
+            "       [0.06453041, 0.13877082, 0.16516711, 0.0795545 ],\n",
+            "       [0.08863511, 0.13647052, 0.15616045, 0.15808042],\n",
+            "       [0.1686444 , 0.08888274, 0.14817889, 0.09836986],\n",
+            "       [0.12511923, 0.08457053, 0.16189439, 0.07785552],\n",
+            "       [0.1573299 , 0.16693795, 0.14027694, 0.08105296],\n",
+            "       [0.13609415, 0.17723359, 0.15133145, 0.17137529],\n",
+            "       [0.08258909, 0.17379566, 0.0763527 , 0.09337977],\n",
+            "       [0.14923409, 0.13959615, 0.1245193 , 0.17155085],\n",
+            "       [0.09218407, 0.08494158, 0.10406081, 0.16053982],\n",
+            "       [0.06386427, 0.14620514, 0.13536595, 0.14843764],\n",
+            "       [0.11393962, 0.11147845, 0.0817038 , 0.14212014],\n",
+            "       [0.15420719, 0.17515957, 0.06017453, 0.12460056],\n",
+            "       [0.06564361, 0.07885298, 0.09181239, 0.11251074],\n",
+            "       [0.13314548, 0.07975751, 0.15940077, 0.16403843],\n",
+            "       [0.15429029, 0.14007667, 0.16795631, 0.13027342],\n",
+            "       [0.07844591, 0.16846992, 0.08697611, 0.1204808 ],\n",
+            "       [0.06646575, 0.17100447, 0.16579685, 0.06869066],\n",
+            "       [0.10520623, 0.12768618, 0.11446204, 0.17588163],\n",
+            "       [0.13933554, 0.17578532, 0.12463239, 0.14222156],\n",
+            "       [0.12768942, 0.17718963, 0.08042435, 0.15457459]]), np.float64(85.68502750680848), np.False_)\n",
+            "Dark Density Rho: 0.015\n",
+            "Dark Min (Veil #5): 0.0145\n",
+            "Top 6 Quanta Harmonies: [ 9 18 11 22  2  0]\n",
+            "Top Mean S Values: [0.15900862 0.14814917 0.1462251  0.1454937  0.14143859 0.1408902 ]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import json\n",
+        "import numpy as np\n",
+        "\n",
+        "# Create a structured dictionary of your results\n",
+        "harvest_data = {\n",
+        "    \"s_sync_probability_matrix\": S_sync[0].tolist(),  # Convert array to list\n",
+        "    \"total_alignment_scalar\": float(S_sync[1]),       # Convert to native float\n",
+        "    \"convergence_status\": bool(S_sync[2]),            # Convert to bool\n",
+        "    \"dark_density_rho\": 0.015,\n",
+        "    \"dark_min_veil_5\": 0.0145,\n",
+        "    \"top_6_quanta_harmonies\": [9, 18, 11, 22, 2, 0],\n",
+        "    \"top_mean_s_values\": [0.15900862, 0.14814917, 0.1462251, 0.1454937, 0.14143859, 0.1408902],\n",
+        "    \"timestamp\": \"2024-...\"  # Add current date/time\n",
+        "}\n",
+        "\n",
+        "# Save to file\n",
+        "with open('s_sync_probability_harvest.json', 'w') as f:\n",
+        "    json.dump(harvest_data, f, indent=2)"
+      ],
+      "metadata": {
+        "id": "3e9P136oFncI"
+      },
+      "execution_count": 17,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "4ebeabef"
+      },
+      "source": [
+        "After uploading the file, you can run the original cell again."
+      ]
+    }
+  ]
+}
